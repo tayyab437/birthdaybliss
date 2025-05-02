@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -212,8 +212,8 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
         {!gameActive && !gameCompleted && (
           <div className="text-center">
             <p className="mb-6">
-              Unscramble birthday-related words before the time runs out! 
-              Each correct answer gives you points and extra time.
+              Unscramble birthday-related words and earn points! 
+              Each correct answer gives you points and moves you to the next level.
             </p>
             <Button 
               onClick={startGame}
