@@ -54,10 +54,10 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
         {
           id: 'birthday-code',
           title: 'Birthday Code',
-          description: 'Enter Zainab\'s birth month as a number (e.g., January = 1).',
+          description: 'Enter Zainab\'s special birthday number code.',
           type: 'code',
-          answer: '1', // Example - replace with actual birth month
-          hint: 'It\'s the first month of the year.',
+          answer: '3', // Birthday code is 3
+          hint: 'It\'s a small single-digit number, one of the first odd numbers.',
           solved: false
         },
         {
@@ -65,8 +65,8 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
           title: 'Favorite Color',
           description: 'What\'s Zainab\'s favorite color? (lowercase)',
           type: 'riddle',
-          answer: 'purple', // Example - replace with actual favorite color
-          hint: 'It\'s the color of royalty and creativity.',
+          answer: 'black', // Favorite color is black
+          hint: 'It\'s the absence of all colors, elegant and timeless.',
           solved: false
         }
       ]
