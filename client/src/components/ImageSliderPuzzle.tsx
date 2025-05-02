@@ -26,7 +26,27 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
   const [isGameActive, setIsGameActive] = useState(false);
   const [difficulty, setDifficulty] = useState<'medium' | 'hard'>('medium');
   const [puzzleSize, setPuzzleSize] = useState<4 | 5>(4); // Default 4x4 grid
-  const [puzzleImage, setPuzzleImage] = useState("https://source.unsplash.com/500x500/?birthday,celebration");
+  // Array of birthday-themed image URLs
+  const birthdayImages = [
+    "https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop"
+  ];
+  
+  // Fallback image in case all images fail to load
+  const fallbackImage = "https://images.unsplash.com/photo-1578922864601-79dce19d5042?w=500&h=500&fit=crop";
+  
+  // Select a random image from the array
+  const [puzzleImage, setPuzzleImage] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * birthdayImages.length);
+    return birthdayImages[randomIndex];
+  });
   const [showHint, setShowHint] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
@@ -397,6 +417,15 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
                     src={puzzleImage}
                     alt="Complete puzzle image" 
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // If the primary image fails to load, use the fallback
+                      const imgElement = e.target as HTMLImageElement;
+                      if (imgElement.src !== fallbackImage) {
+                        console.log('Using fallback image for hint');
+                        imgElement.src = fallbackImage;
+                        setPuzzleImage(fallbackImage); // Also update the puzzle tiles
+                      }
+                    }}
                   />
                 </div>
                 <p className="text-center text-sm mt-2 text-neutral-dark/70">
