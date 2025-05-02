@@ -49,7 +49,7 @@ export default function BirthdayCard({ audioPlaying, onToggleAudio }: BirthdayCa
                 </div>
                 <div>
                   <p className="cursive text-xl md:text-2xl text-accent">Happy Birthday!</p>
-                  <p className="mt-2 font-medium">With love,</p>
+                  <p className="mt-2 font-medium">Sincerity,</p>
                   <p className="cursive text-xl">Tayyab Ashfaq</p>
                 </div>
               </div>
