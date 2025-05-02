@@ -142,7 +142,7 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
     return null;
   };
   
-  // Handle tile click
+  // Handle tile click and touch
   const handleTileClick = (tilePosition: number) => {
     if (!isGameActive) return;
     
@@ -160,8 +160,73 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
       setMoves(moves + 1);
       playClickSound();
       
+      // Add haptic feedback for mobile devices
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50); // Short vibration for 50ms
+      }
+      
       // Check if puzzle is solved
       checkPuzzleCompletion(newTiles);
+    }
+  };
+  
+  // Handle touch events for swipe-based tile movement
+  const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
+  
+  const handleTouchStart = (event: React.TouchEvent, tilePosition: number) => {
+    // Record the starting touch position
+    setTouchStart({
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY
+    });
+  };
+  
+  const handleTouchEnd = (event: React.TouchEvent, tilePosition: number) => {
+    if (!touchStart) return;
+    
+    // Calculate the swipe direction and distance
+    const touchEnd = {
+      x: event.changedTouches[0].clientX,
+      y: event.changedTouches[0].clientY
+    };
+    
+    const deltaX = touchEnd.x - touchStart.x;
+    const deltaY = touchEnd.y - touchStart.y;
+    
+    // Reset touch start
+    setTouchStart(null);
+    
+    // Ignore small movements (likely just taps)
+    const minSwipeDistance = 15;
+    if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+      // Treat as a regular click/tap
+      handleTileClick(tilePosition);
+      return;
+    }
+    
+    // Determine the swipe direction
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (deltaX > 0) {
+        // Right swipe - move the tile to the left (if the empty space is to the left)
+        const direction = canMoveTile(tilePosition);
+        if (direction === 'left') handleTileClick(tilePosition);
+      } else {
+        // Left swipe - move the tile to the right (if the empty space is to the right)
+        const direction = canMoveTile(tilePosition);
+        if (direction === 'right') handleTileClick(tilePosition);
+      }
+    } else {
+      // Vertical swipe
+      if (deltaY > 0) {
+        // Down swipe - move the tile up (if the empty space is above)
+        const direction = canMoveTile(tilePosition);
+        if (direction === 'up') handleTileClick(tilePosition);
+      } else {
+        // Up swipe - move the tile down (if the empty space is below)
+        const direction = canMoveTile(tilePosition);
+        if (direction === 'down') handleTileClick(tilePosition);
+      }
     }
   };
   
@@ -349,11 +414,15 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
               {tiles.map((tile) => (
                 <motion.div
                   key={tile.id}
-                  className="relative bg-cover cursor-pointer hover:brightness-110 transition-all"
+                  className="relative bg-cover cursor-pointer hover:brightness-110 transition-all touch-feedback slider-tile"
                   style={getTileStyle(tile)}
                   layoutId={`tile-${tile.id}`}
                   onClick={() => handleTileClick(tile.currentPosition)}
+                  onTouchStart={(e) => handleTouchStart(e, tile.currentPosition)}
+                  onTouchEnd={(e) => handleTouchEnd(e, tile.currentPosition)}
                   whileHover={{ scale: 0.98 }}
+                  data-tile-id={tile.id}
+                  aria-label={`Puzzle tile ${tile.id + 1}`}
                 >
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-lg">
                     {difficulty === 'hard' ? null : tile.id + 1}
@@ -371,9 +440,17 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
               />
             </div>
             
-            <p className="text-center mt-4 text-sm text-neutral-dark/70">
-              Click on tiles adjacent to the empty space to slide them.
-            </p>
+            <div className="text-center mt-4">
+              <p className="text-sm text-neutral-dark/70 hidden md:block">
+                Click on tiles adjacent to the empty space to slide them.
+              </p>
+              <p className="text-sm text-neutral-dark/70 md:hidden">
+                Tap or swipe tiles adjacent to the empty space to move them.
+              </p>
+              <p className="text-xs text-accent/70 mt-1 md:hidden">
+                Swipe in the direction you want to move the tile
+              </p>
+            </div>
           </div>
         )}
         

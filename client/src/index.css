@@ -186,10 +186,19 @@
   scroll-snap-type: y mandatory;
   height: 100vh;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */
+  overscroll-behavior-y: contain; /* Prevent scroll chaining */
+  scroll-behavior: smooth; /* Smooth scrolling for all browsers */
 }
 
 .main-container::-webkit-scrollbar {
   display: none;
+}
+
+/* Make sure tap targets are at least 44px x 44px for touch devices */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .gift-box {
@@ -315,4 +324,54 @@
 .scramble-letter {
   display: inline-block;
   transition: all 0.3s ease;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  /* Increase tap target size for mobile */
+  button, 
+  a, 
+  input[type="button"], 
+  input[type="submit"],
+  .interactive-element {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+  
+  /* Adjust spacing for better mobile display */
+  h1 {
+    font-size: 1.85rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Better touch feedback */
+  .touch-feedback:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  
+  /* Fix for iOS overflow issues */
+  .ios-scroll-fix {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Larger form elements on mobile */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Improved shadows for depth on mobile */
+  .mobile-shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }

@@ -42,10 +42,11 @@ export default function NavigationButtons({
   
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-      {/* Toggle button */}
+      {/* Toggle button - larger touch target for mobile */}
       <button
         onClick={toggleButtons}
-        className="bg-accent text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center mb-2 hover:bg-accent/90"
+        className="bg-accent text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center mb-2 hover:bg-accent/90 touch-feedback"
+        aria-label={showButtons ? "Close navigation" : "Open navigation"}
       >
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
@@ -67,11 +68,11 @@ export default function NavigationButtons({
         </svg>
       </button>
       
-      {/* Navigation buttons */}
+      {/* Navigation buttons with better mobile support */}
       {showButtons && (
-        <div className="flex flex-col gap-2 items-end mb-2">
-          {/* Navigation menu */}
-          <div className="bg-white p-4 rounded-lg shadow-lg grid gap-2 w-48">
+        <div className="flex flex-col gap-2 items-end mb-2 ios-scroll-fix">
+          {/* Navigation menu - responsive width */}
+          <div className="bg-white p-4 rounded-lg shadow-lg grid gap-2 w-48 md:w-56 mobile-shadow">
             <p className="text-sm font-medium text-gray-500 mb-2">Quick Navigation</p>
             {sections.filter(section => section !== 'welcome').map(section => (
               <button
@@ -80,7 +81,7 @@ export default function NavigationButtons({
                   navigateToSection(section);
                   setShowButtons(false);
                 }}
-                className={`text-left text-sm px-3 py-2 rounded-lg transition-colors
+                className={`text-left text-sm px-3 py-3 rounded-lg transition-colors touch-feedback
                 ${currentSection === section 
                   ? 'bg-accent/20 text-accent' 
                   : 'hover:bg-gray-100'}`}
@@ -90,15 +91,16 @@ export default function NavigationButtons({
             ))}
           </div>
           
-          {/* Prev/Next buttons */}
+          {/* Larger Prev/Next buttons for touch */}
           <div className="flex gap-2">
             {prevSection && (
               <button
                 onClick={() => navigateToSection(prevSection)}
-                className="bg-white rounded-full shadow-lg w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+                className="bg-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center hover:bg-gray-100 touch-feedback"
                 title={`Previous: ${formatSectionName(prevSection)}`}
+                aria-label={`Go to previous section: ${formatSectionName(prevSection)}`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
@@ -107,10 +109,11 @@ export default function NavigationButtons({
             {nextSection && (
               <button
                 onClick={() => navigateToSection(nextSection)}
-                className="bg-white rounded-full shadow-lg w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+                className="bg-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center hover:bg-gray-100 touch-feedback"
                 title={`Next: ${formatSectionName(nextSection)}`}
+                aria-label={`Go to next section: ${formatSectionName(nextSection)}`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
@@ -118,6 +121,11 @@ export default function NavigationButtons({
           </div>
         </div>
       )}
+      
+      {/* Mobile swipe indicator - shown only on small screens */}
+      <div className="md:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg text-xs font-medium text-gray-500 animate-pulse">
+        Swipe up/down to navigate
+      </div>
     </div>
   );
 }
