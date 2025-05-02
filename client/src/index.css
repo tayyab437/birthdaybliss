@@ -208,3 +208,111 @@
 .cake-candle:hover {
   filter: brightness(1.3);
 }
+
+/* New animations for additional components */
+
+/* Record spinning animation for music player */
+@keyframes record-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-record-spin {
+  animation: record-spin 8s linear infinite;
+}
+
+/* Word scramble animations */
+@keyframes letter-bounce {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+.letter-bounce {
+  animation: letter-bounce 0.7s ease-in-out;
+}
+
+/* Avatar pulsing animation */
+@keyframes avatar-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.avatar-pulse {
+  animation: avatar-pulse 2s infinite;
+}
+
+/* Gift unwrapping animation */
+@keyframes unwrap {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(0) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.unwrapping {
+  animation: unwrap 1s forwards;
+}
+
+/* Escape room key animation */
+@keyframes key-float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(10deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.key-float {
+  animation: key-float 2s ease-in-out infinite;
+}
+
+/* Interactive elements hover effect */
+.interactive-element {
+  transition: all 0.3s ease;
+}
+
+.interactive-element:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Slider puzzle tile highlighting */
+.slider-tile.correct {
+  box-shadow: inset 0 0 0 2px rgba(22, 163, 74, 0.5);
+}
+
+/* Image slider puzzle transition */
+.slider-tile {
+  transition: all 0.2s ease;
+}
+
+/* Word scramble letter styling */
+.scramble-letter {
+  display: inline-block;
+  transition: all 0.3s ease;
+}

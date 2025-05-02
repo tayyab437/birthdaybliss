@@ -14,6 +14,8 @@ import DigitalEscapeRoom from '@/components/DigitalEscapeRoom';
 import InteractiveBirthdayPlaylist from '@/components/InteractiveBirthdayPlaylist';
 import VirtualBirthdayGifts from '@/components/VirtualBirthdayGifts';
 import BirthdayAvatarCreator from '@/components/BirthdayAvatarCreator';
+import NavigationButtons from '@/components/NavigationButtons';
+import PageLoader from '@/components/PageLoader';
 
 // Define sections for navigation
 const sections = [
@@ -78,6 +80,8 @@ export default function BirthdaySite() {
 
   return (
     <>
+      <PageLoader delay={2000} />
+      
       <div 
         ref={containerRef} 
         className="main-container" 
@@ -105,6 +109,12 @@ export default function BirthdaySite() {
       <AudioController 
         isPlaying={audioPlaying} 
         setIsPlaying={setAudioPlaying} 
+      />
+
+      <NavigationButtons 
+        currentSection={currentSection}
+        navigateToSection={navigateToSection}
+        sections={sections}
       />
     </>
   );
