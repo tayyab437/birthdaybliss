@@ -342,21 +342,33 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
               <h3 className="text-xl font-bold mb-2">{currentRoom.name}</h3>
               <p className="mb-4 text-neutral-dark/70">{currentRoom.description}</p>
               
-              {/* Puzzle tabs */}
-              <div className="flex mb-4 gap-2 overflow-x-auto pb-2">
-                {currentRoom.puzzles.map((puzzle, index) => (
-                  <Button
-                    key={puzzle.id}
-                    onClick={() => switchPuzzle(index)}
-                    variant={currentPuzzleIndex === index ? "default" : "outline"}
-                    className={`${currentPuzzleIndex === index ? 'bg-primary text-white' : ''} 
+              {/* Puzzle tabs - Mobile Optimized */}
+              <div className="flex mb-4 gap-2 overflow-x-auto pb-2 ios-scroll-fix">
+                <div className="flex space-x-2 md:space-x-3 min-w-max">
+                  {currentRoom.puzzles.map((puzzle, index) => (
+                    <Button
+                      key={puzzle.id}
+                      onClick={() => {
+                        switchPuzzle(index);
+                        // Add haptic feedback for mobile
+                        if (window.navigator && window.navigator.vibrate) {
+                          window.navigator.vibrate(20);
+                        }
+                      }}
+                      variant={currentPuzzleIndex === index ? "default" : "outline"}
+                      className={`${currentPuzzleIndex === index ? 'bg-primary text-white' : ''} 
                                 ${puzzle.solved ? 'border-green-500' : ''}
-                                whitespace-nowrap`}
-                  >
-                    {puzzle.title}
-                    {puzzle.solved && ' ✓'}
-                  </Button>
-                ))}
+                                whitespace-nowrap touch-feedback h-12 md:h-10 mobile-shadow`}
+                    >
+                      <span className="hidden md:inline">{puzzle.title}</span>
+                      <span className="md:hidden">{`Puzzle ${index + 1}`}</span>
+                      {puzzle.solved && <span className="ml-1 text-green-500">✓</span>}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-1 mb-4 text-xs text-center text-gray-500 md:hidden">
+                <p>Swipe to see more puzzles</p>
               </div>
             </div>
             
@@ -378,44 +390,63 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
                   e.preventDefault();
                   checkAnswer();
                 }}
-                className="flex gap-2"
+                className="flex flex-col md:flex-row gap-2"
               >
-                <Input
-                  type="text"
-                  value={currentInput}
-                  onChange={(e) => setCurrentInput(e.target.value)}
-                  placeholder="Enter your answer..."
-                  className="flex-1"
-                  autoFocus
-                  disabled={currentPuzzle.solved}
-                />
+                <div className="relative w-full">
+                  <Input
+                    type="text"
+                    value={currentInput}
+                    onChange={(e) => setCurrentInput(e.target.value)}
+                    placeholder="Enter your answer..."
+                    className="flex-1 h-12 md:h-10 pl-4 pr-10 text-lg"
+                    disabled={currentPuzzle.solved}
+                    autoCapitalize="off"
+                  />
+                  {currentInput.length > 0 && !currentPuzzle.solved && (
+                    <button 
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 touch-feedback"
+                      onClick={() => setCurrentInput('')}
+                      aria-label="Clear input"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M15 9l-6 6" />
+                        <path d="M9 9l6 6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
                 <Button 
                   type="submit"
                   disabled={currentPuzzle.solved || !currentInput.trim()}
-                  className={currentPuzzle.solved ? 'bg-green-500 text-white' : 'bg-primary text-white'}
+                  className={`${currentPuzzle.solved ? 'bg-green-500 text-white' : 'bg-primary text-white'} h-12 md:h-10 text-lg md:text-base touch-feedback`}
                 >
                   {currentPuzzle.solved ? 'Solved!' : 'Submit'}
                 </Button>
               </form>
             </div>
             
-            {/* Controls */}
-            <div className="flex justify-between">
+            {/* Controls - Mobile Optimized */}
+            <div className="flex flex-col md:flex-row justify-between gap-4">
               <Button
                 onClick={toggleHint}
                 variant="outline"
                 disabled={currentPuzzle.solved}
+                className="h-12 md:h-10 touch-feedback"
               >
                 {showHint ? 'Hide Hint' : 'Show Hint'}
               </Button>
               
-              <div className="space-x-2">
+              <div className="flex gap-2 w-full md:w-auto">
                 {currentPuzzleIndex > 0 && (
                   <Button
                     onClick={() => switchPuzzle(currentPuzzleIndex - 1)}
                     variant="outline"
+                    className="flex-1 md:flex-initial h-12 md:h-10 touch-feedback"
                   >
-                    Previous Puzzle
+                    <span className="hidden md:inline">Previous Puzzle</span>
+                    <span className="md:hidden">Previous</span>
                   </Button>
                 )}
                 
@@ -424,8 +455,10 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
                     onClick={() => switchPuzzle(currentPuzzleIndex + 1)}
                     variant="outline"
                     disabled={!currentRoom.puzzles[currentPuzzleIndex].solved}
+                    className="flex-1 md:flex-initial h-12 md:h-10 touch-feedback"
                   >
-                    Next Puzzle
+                    <span className="hidden md:inline">Next Puzzle</span>
+                    <span className="md:hidden">Next</span>
                   </Button>
                 )}
               </div>

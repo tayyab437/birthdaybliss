@@ -280,14 +280,22 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
             
             <div className="mb-6">
               <h3 className="text-xl font-bold mb-2">Unscramble this word:</h3>
-              <div className="flex flex-wrap justify-center gap-2 mb-4">
+              <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4">
                 {currentWordObj.scrambled.split('').map((letter, index) => (
                   <motion.div 
                     key={index}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="w-10 h-10 bg-secondary/10 rounded-md flex items-center justify-center text-lg font-bold"
+                    className="w-10 h-10 md:w-12 md:h-12 bg-secondary/10 rounded-md flex items-center justify-center text-lg md:text-xl font-bold touch-feedback scramble-letter"
+                    onClick={() => {
+                      // Add letter to input on touch/click
+                      setUserGuess(prev => prev + letter);
+                      // Add haptic feedback for mobile
+                      if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(20);
+                      }
+                    }}
                   >
                     {letter}
                   </motion.div>
@@ -303,36 +311,74 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
                   e.preventDefault();
                   handleSubmitGuess();
                 }}
-                className="flex gap-2"
+                className="flex flex-col md:flex-row gap-2"
               >
-                <Input
-                  type="text"
-                  value={userGuess}
-                  onChange={(e) => setUserGuess(e.target.value)}
-                  placeholder="Type your answer..."
-                  className="flex-1"
-                  autoFocus
-                />
-                <Button type="submit" className="bg-primary text-white">
+                <div className="relative w-full">
+                  <Input
+                    type="text"
+                    value={userGuess}
+                    onChange={(e) => setUserGuess(e.target.value)}
+                    placeholder="Type your answer or tap letters above..."
+                    className="flex-1 h-12 md:h-10 pl-4 pr-10 text-lg"
+                    autoCapitalize="characters"
+                    autoCorrect="off"
+                    spellCheck="false"
+                  />
+                  {userGuess.length > 0 && (
+                    <button 
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 touch-feedback"
+                      onClick={() => setUserGuess('')}
+                      aria-label="Clear input"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M15 9l-6 6" />
+                        <path d="M9 9l6 6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <Button 
+                  type="submit" 
+                  className="bg-primary text-white h-12 md:h-10 text-lg md:text-base touch-feedback"
+                >
                   Check
                 </Button>
               </form>
+              
+              <div className="flex justify-center mt-3 mb-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setUserGuess(prev => prev.slice(0, -1))}
+                  className="text-xs text-gray-500"
+                  disabled={userGuess.length === 0}
+                >
+                  <span className="mr-1">⌫</span> Backspace
+                </Button>
+              </div>
             </div>
             
-            <div className="flex justify-between gap-2">
+            <div className="flex justify-between gap-3">
               <Button 
                 onClick={getHint}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 h-12 touch-feedback"
               >
-                Get Hint (-3s)
+                <span className="hidden md:inline">Get Hint</span>
+                <span className="md:hidden">Hint</span>
+                <span className="text-accent ml-1">-3s</span>
               </Button>
               <Button
                 onClick={skipWord}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 h-12 touch-feedback"
               >
-                Skip Word (-5 pts)
+                <span className="hidden md:inline">Skip Word</span>
+                <span className="md:hidden">Skip</span>
+                <span className="text-accent ml-1">-5pts</span>
               </Button>
             </div>
             
