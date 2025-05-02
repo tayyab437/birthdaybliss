@@ -74,7 +74,7 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
     {
       id: 'friendship-room',
       name: 'Friendship Room',
-      description: 'Great job! Now you\'ve entered the room of friendship. These puzzles celebrate your connection with Zainab.',
+      description: 'Final room! These puzzles celebrate your connection with Zainab and your memories together.',
       unlocked: false,
       completed: false,
       puzzles: [
@@ -95,18 +95,9 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
           answer: 'lahore', // The city where you met
           hint: 'It\'s a major cultural city in Pakistan.',
           solved: false
-        }
-      ]
-    },
-    {
-      id: 'celebration-room',
-      name: 'Celebration Room',
-      description: 'Final room! Solve these puzzles to complete the birthday escape room challenge!',
-      unlocked: false,
-      completed: false,
-      puzzles: [
+        },
         {
-          id: 'birthday-wish',
+          id: 'lahore-memory',
           title: 'Lahore Memory',
           description: 'What was something special you both did in Lahore when you met? (hint: coffee, movie, or dinner)',
           type: 'riddle',
@@ -115,7 +106,7 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
           solved: false
         },
         {
-          id: 'final-code',
+          id: 'friendship-year',
           title: 'Friendship Year',
           description: 'Enter the last two digits of the year you met in Lahore.',
           type: 'code',
