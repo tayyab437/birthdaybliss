@@ -12,7 +12,7 @@ import WordScrambleGame from '@/components/WordScrambleGame';
 import ImageSliderPuzzle from '@/components/ImageSliderPuzzle';
 import DigitalEscapeRoom from '@/components/DigitalEscapeRoom';
 import InteractiveBirthdayPlaylist from '@/components/InteractiveBirthdayPlaylist';
-
+import VirtualBirthdayGifts from '@/components/VirtualBirthdayGifts';
 import BirthdayAvatarCreator from '@/components/BirthdayAvatarCreator';
 import NavigationButtons from '@/components/NavigationButtons';
 import PageLoader from '@/components/PageLoader';
@@ -27,6 +27,7 @@ const sections = [
   'digital-escape-room',
   'special-qualities',
   'gift-reveal',
+  'virtual-gifts',
   'message-wall',
   'birthday-playlist',
   'birthday-avatar-creator',
@@ -97,6 +98,7 @@ export default function BirthdaySite() {
         <DigitalEscapeRoom onComplete={() => navigateToSection('special-qualities')} />
         <SpecialQualities />
         <GiftReveal />
+        <VirtualBirthdayGifts />
         <MessageWall />
         <InteractiveBirthdayPlaylist />
         <BirthdayAvatarCreator />
