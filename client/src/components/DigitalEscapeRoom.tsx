@@ -83,17 +83,17 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
           title: 'When Did You Meet?',
           description: 'In what year did you first meet Zainab? (Enter the full year)',
           type: 'code',
-          answer: '2010', // Example - replace with actual year
-          hint: 'It was in the early 2010s.',
+          answer: '2022', // The year you met in Lahore
+          hint: 'You met quite recently, in the 2020s.',
           solved: false
         },
         {
           id: 'shared-memory',
-          title: 'Shared Memory',
-          description: 'What city did you and Zainab first visit together? (lowercase)',
+          title: 'Where Did You Meet?',
+          description: 'In which city did you and Zainab first meet? (lowercase)',
           type: 'riddle',
-          answer: 'paris', // Example - replace with actual place
-          hint: 'It\'s known as the City of Love.',
+          answer: 'lahore', // The city where you met
+          hint: 'It\'s a major cultural city in Pakistan.',
           solved: false
         }
       ]
@@ -107,20 +107,20 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
       puzzles: [
         {
           id: 'birthday-wish',
-          title: 'Birthday Wish',
-          description: 'What is Zainab\'s birthday wish this year? (hint: it starts with "t")',
+          title: 'Lahore Memory',
+          description: 'What was something special you both did in Lahore when you met? (hint: coffee, movie, or dinner)',
           type: 'riddle',
-          answer: 'travel', // Example - replace with actual wish
-          hint: 'It involves seeing new places.',
+          answer: 'coffee', // Example - you can tell the user to change this
+          hint: 'You might have enjoyed a hot beverage together.',
           solved: false
         },
         {
           id: 'final-code',
-          title: 'Friendship Code',
-          description: 'Enter the code that represents your friendship with Zainab. The day you became friends (DD).',
+          title: 'Friendship Year',
+          description: 'Enter the last two digits of the year you met in Lahore.',
           type: 'code',
-          answer: '15', // Example - replace with actual day
-          hint: 'It\'s in the middle of the month.',
+          answer: '22', // Last two digits of 2022
+          hint: 'It\'s from the year 2022.',
           solved: false
         }
       ]
@@ -313,22 +313,41 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
         
         {gameStarted && !gameCompleted && (
           <div>
-            {/* Room navigation */}
-            <div className="flex mb-6 gap-2 overflow-x-auto pb-2">
-              {rooms.map((room, index) => (
-                <Button
-                  key={room.id}
-                  onClick={() => room.unlocked && switchRoom(index)}
-                  variant={currentRoomIndex === index ? "default" : "outline"}
-                  className={`${currentRoomIndex === index ? 'bg-accent text-white' : ''} 
-                              ${!room.unlocked ? 'opacity-50 cursor-not-allowed' : ''}
-                              whitespace-nowrap`}
-                  disabled={!room.unlocked}
-                >
-                  {room.unlocked ? room.name : '🔒 Locked Room'}
-                  {room.completed && ' ✓'}
-                </Button>
-              ))}
+            {/* Room navigation - Mobile Optimized */}
+            <div className="mb-6 overflow-x-auto pb-2 ios-scroll-fix">
+              <div className="flex gap-2 md:gap-3 min-w-max">
+                {rooms.map((room, index) => (
+                  <Button
+                    key={room.id}
+                    onClick={() => {
+                      if (room.unlocked) {
+                        switchRoom(index);
+                        // Add haptic feedback for mobile
+                        if (window.navigator && window.navigator.vibrate) {
+                          window.navigator.vibrate(20);
+                        }
+                      }
+                    }}
+                    variant={currentRoomIndex === index ? "default" : "outline"}
+                    className={`${currentRoomIndex === index ? 'bg-accent text-white' : ''} 
+                                ${!room.unlocked ? 'opacity-50 cursor-not-allowed' : ''}
+                                whitespace-nowrap touch-feedback h-12 md:h-10 mobile-shadow`}
+                    disabled={!room.unlocked}
+                  >
+                    {room.unlocked ? room.name : (
+                      <span className="flex items-center">
+                        <span className="mr-1">🔒</span>
+                        <span className="hidden md:inline">Locked Room</span>
+                        <span className="md:hidden">Locked</span>
+                      </span>
+                    )}
+                    {room.completed && <span className="ml-1 text-green-500">✓</span>}
+                  </Button>
+                ))}
+              </div>
+              <div className="mt-1 text-xs text-center text-gray-500 md:hidden">
+                <p>Swipe to see all rooms</p>
+              </div>
             </div>
             
             {/* Game stats */}
@@ -468,23 +487,27 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
         
         {gameCompleted && !showSuccess && (
           <div className="text-center">
+            <div className="text-5xl mb-4">🎉</div>
             <h3 className="text-2xl font-bold mb-4">Escape Room Completed!</h3>
             <p className="mb-2">
               Congratulations! You've successfully solved all the puzzles and escaped!
             </p>
             <p className="mb-6">
-              Time: {formatTime(timeElapsed)} | Hints used: {hintsUsed}
+              <span className="block md:inline">Time: {formatTime(timeElapsed)}</span> 
+              <span className="hidden md:inline mx-2">|</span> 
+              <span className="block md:inline">Hints used: {hintsUsed}</span>
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col md:flex-row justify-center gap-4">
               <Button
                 onClick={startGame}
                 variant="outline"
+                className="h-12 md:h-10 touch-feedback mobile-shadow"
               >
                 Play Again
               </Button>
               <Button
                 onClick={handleContinue}
-                className="bg-accent text-white"
+                className="bg-accent text-white h-12 md:h-10 touch-feedback mobile-shadow"
               >
                 Continue
               </Button>
@@ -506,15 +529,19 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring" }}
-              className="bg-white rounded-xl p-8 max-w-md text-center shadow-2xl"
+              className="bg-white rounded-xl p-6 md:p-8 mx-4 max-w-md text-center shadow-2xl"
             >
-              <div className="text-6xl mb-4">🎉</div>
+              <div className="text-5xl md:text-6xl mb-4">🎉</div>
               <h3 className="text-2xl font-bold mb-3">Escape Room Master!</h3>
               <p className="mb-2">You've solved all the puzzles and completed the birthday escape room!</p>
-              <p className="mb-6">Time: {formatTime(timeElapsed)} | Hints: {hintsUsed}</p>
+              <p className="mb-6">
+                <span className="block md:inline">Time: {formatTime(timeElapsed)}</span> 
+                <span className="hidden md:inline mx-2">|</span> 
+                <span className="block md:inline">Hints: {hintsUsed}</span>
+              </p>
               <Button 
                 onClick={handleContinue}
-                className="px-6 py-3 bg-accent text-white rounded-full font-semibold hover:bg-opacity-90 transition-all"
+                className="px-6 py-4 md:py-3 bg-accent text-white rounded-full font-semibold hover:bg-opacity-90 transition-all touch-feedback h-14 md:h-12 text-lg"
               >
                 Continue Celebrating
               </Button>
