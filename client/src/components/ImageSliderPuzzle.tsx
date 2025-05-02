@@ -28,15 +28,15 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
   const [puzzleSize, setPuzzleSize] = useState<4 | 5>(4); // Default 4x4 grid
   // Array of birthday-themed image URLs
   const birthdayImages = [
-    "https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop"
+    "https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=500&h=500&fit=crop", // Birthday cake
+    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=500&h=500&fit=crop", // Birthday cupcakes
+    "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&h=500&fit=crop", // Balloons
+    "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&h=500&fit=crop", // Presents
+    "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&h=500&fit=crop", // Colorful cupcakes
+    "https://images.unsplash.com/photo-1562777717-dc81a265b99f?w=500&h=500&fit=crop", // Party decorations
+    "https://images.unsplash.com/photo-1581349485608-9469926a8e5e?w=500&h=500&fit=crop", // Birthday cake with candles
+    "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&h=500&fit=crop", // Celebration
+    "https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=500&h=500&fit=crop"  // Colorful pastries
   ];
   
   // Fallback image in case all images fail to load
@@ -52,6 +52,10 @@ export default function ImageSliderPuzzle({ onPuzzleComplete }: ImageSliderPuzzl
   
   // Initialize the puzzle
   const initializePuzzle = () => {
+    // Select a new random image each time
+    const randomIndex = Math.floor(Math.random() * birthdayImages.length);
+    setPuzzleImage(birthdayImages[randomIndex]);
+    
     // Determine grid size based on difficulty
     const gridSize = difficulty === 'hard' ? 5 : 4;
     setPuzzleSize(gridSize as 4 | 5);

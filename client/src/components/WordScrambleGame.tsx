@@ -32,7 +32,6 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
     scrambled: "" 
   });
   const [userGuess, setUserGuess] = useState('');
-  const [timeLeft, setTimeLeft] = useState(60);
   const [gameActive, setGameActive] = useState(false);
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(1);
@@ -81,7 +80,6 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
     setGameActive(true);
     setScore(0);
     setLevel(1);
-    setTimeLeft(60);
     setWordsSolved([]);
     setShowSuccess(false);
     setGameCompleted(false);
@@ -117,13 +115,10 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
       // Increase level
       setLevel(level + 1);
       
-      // Add some time as reward
-      setTimeLeft(timeLeft + 10);
-      
       // Show success toast
       toast({
         title: "Correct!",
-        description: `Great job! +${10 * level} points. +10 seconds!`,
+        description: `Great job! +${10 * level} points!`,
       });
       
       // Play sound
@@ -141,9 +136,6 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
         description: "That's not the right word.",
         variant: "destructive"
       });
-      
-      // Reduce time as penalty
-      setTimeLeft(Math.max(0, timeLeft - 5));
     }
   };
   
@@ -161,11 +153,12 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
     setUserGuess(userGuess + nextLetter);
     
     // Small penalty for using hint
-    setTimeLeft(Math.max(0, timeLeft - 3));
+    const newScore = Math.max(0, score - 2);
+    setScore(newScore);
     
     toast({
       title: "Hint used",
-      description: `-3 seconds. The next letter is '${nextLetter}'.`,
+      description: `The next letter is '${nextLetter}'. -2 points for using hint.`,
     });
   };
   
@@ -205,24 +198,7 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
     if (onGameComplete) onGameComplete();
   };
   
-  // Timer effect
-  useEffect(() => {
-    if (!gameActive) return;
-    
-    const timer = setTimeout(() => {
-      if (timeLeft > 0) {
-        setTimeLeft(timeLeft - 1);
-      } else {
-        endGame(false);
-        toast({
-          title: "Time's up!",
-          description: `You scored ${score} points. Try again!`,
-        });
-      }
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [timeLeft, gameActive, score, toast]);
+  // No timer effect needed anymore
   
   return (
     <section 
@@ -271,9 +247,9 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
                 <p className="text-sm font-medium">Score: {score}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-medium">Time Left:</p>
-                <p className={`text-xl font-bold ${timeLeft < 10 ? 'text-red-500 animate-pulse' : 'text-accent'}`}>
-                  {timeLeft}s
+                <p className="text-sm font-medium">Words Solved:</p>
+                <p className="text-xl font-bold text-accent">
+                  {wordsSolved.length}/{birthdayWords.length}
                 </p>
               </div>
             </div>
@@ -369,7 +345,7 @@ export default function WordScrambleGame({ onGameComplete }: WordScrambleGamePro
               >
                 <span className="hidden md:inline">Get Hint</span>
                 <span className="md:hidden">Hint</span>
-                <span className="text-accent ml-1">-3s</span>
+                <span className="text-accent ml-1">-2pts</span>
               </Button>
               <Button
                 onClick={skipWord}
