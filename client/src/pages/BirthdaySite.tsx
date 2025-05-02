@@ -80,7 +80,8 @@ export default function BirthdaySite() {
 
   return (
     <>
-      <PageLoader delay={2000} />
+      {/* Temporarily removing PageLoader for debugging */}
+      {/* <PageLoader delay={2000} /> */}
       
       <div 
         ref={containerRef} 
@@ -92,16 +93,23 @@ export default function BirthdaySite() {
           audioPlaying={audioPlaying} 
           onToggleAudio={() => setAudioPlaying(!audioPlaying)} 
         />
-        <PuzzleGame onPuzzleComplete={() => navigateToSection('word-scramble-game')} />
+        <PuzzleGame onPuzzleComplete={() => navigateToSection('special-qualities')} />
+        {/* Temporarily commenting out newer components for debugging */}
+        {/* 
         <WordScrambleGame onGameComplete={() => navigateToSection('image-slider-puzzle')} />
         <ImageSliderPuzzle onPuzzleComplete={() => navigateToSection('digital-escape-room')} />
         <DigitalEscapeRoom onComplete={() => navigateToSection('special-qualities')} />
+        */}
         <SpecialQualities />
         <GiftReveal />
+        {/* 
         <VirtualBirthdayGifts />
+        */}
         <MessageWall />
+        {/* 
         <InteractiveBirthdayPlaylist />
         <BirthdayAvatarCreator />
+        */}
         <BirthdayCountdown />
         <BirthdayCake />
       </div>
@@ -111,11 +119,14 @@ export default function BirthdaySite() {
         setIsPlaying={setAudioPlaying} 
       />
 
+      {/* Temporarily removing NavigationButtons for debugging */}
+      {/* 
       <NavigationButtons 
         currentSection={currentSection}
         navigateToSection={navigateToSection}
         sections={sections}
       />
+      */}
     </>
   );
 }
