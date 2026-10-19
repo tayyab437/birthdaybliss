@@ -41,7 +41,7 @@ export default function BirthdayCard({ audioPlaying, onToggleAudio }: BirthdayCa
                 <div>
                   <h3 className="cursive text-2xl md:text-3xl text-accent mb-4">Dear Aqsa,</h3>
                   <p className="text-sm md:text-base mb-4 leading-relaxed">
-                    On your special day, I want to celebrate all the joy and light you bring to the world. Your friendship means more than words can express.
+                    On your special day, I want to celebrate all the joy and light you bring to the world. Your company means more than words can express.
                   </p>
                   <p className="text-sm md:text-base mb-6 leading-relaxed">
                     Here's to another year of laughter, growth, and beautiful memories together.

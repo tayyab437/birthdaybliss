@@ -15,19 +15,9 @@ const qualities = [
     color: "border-secondary"
   },
   {
-    title: "Your Strength",
-    description: "Your resilience in the face of challenges is remarkable. You handle difficult situations with grace and emerge even stronger.",
-    color: "border-primary"
-  },
-  {
     title: "Your Smile & Voice",
     description: "I miss your smile so much, your sweet way of talking, your laughter, and honestly every single thing about you. Being around you brings a kind of happiness that nothing else in the world can match.",
     color: "border-accent"
-  },
-  {
-    title: "Your Friendship",
-    description: "You're the kind of friend everyone wishes for - loyal, understanding, and always there when needed. I'm grateful for our connection.",
-    color: "border-secondary"
   }
 ];
 

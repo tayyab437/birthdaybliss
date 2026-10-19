@@ -95,22 +95,6 @@ function VideoPlayerCard({ video }: { video: VideoItem }) {
         )}
       </div>
 
-      <div className="p-4 md:p-5 text-left bg-gradient-to-b from-white to-pink-50/50">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider bg-rose-50 px-2.5 py-0.5 rounded-full">
-            Video {video.id}
-          </span>
-          <button
-            type="button"
-            onClick={handlePlayToggle}
-            className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-100/60 px-3 py-1 rounded-full flex items-center gap-1"
-          >
-            {isPlaying ? '⏸ Pause' : '▶ Play'}
-          </button>
-        </div>
-        <h4 className="font-bold text-neutral-dark text-base md:text-lg">{video.title}</h4>
-        <p className="text-xs md:text-sm text-gray-500 mt-1">{video.caption}</p>
-      </div>
     </div>
   );
 }
@@ -256,13 +240,6 @@ export default function MarriageProposal() {
 
           {/* Videos Section Beneath - Optimized for Mobile View with Center Play Buttons */}
           <div className="mt-12 border-t border-pink-200 pt-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-neutral-dark mb-2 cursive">
-              Moments of Our Love 🎬
-            </h3>
-            <p className="text-xs md:text-sm text-gray-500 mb-8">
-              Tap any video or the play button to start watching
-            </p>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {videos.map((vid) => (
                 <VideoPlayerCard key={vid.id} video={vid} />

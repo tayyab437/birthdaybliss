@@ -29,7 +29,7 @@ export class MemStorage implements IStorage {
     // Add some sample messages
     this.createMessage({
       name: "Kivan",
-      message: "Happy birthday Aqsa! Wishing you a day filled with joy and laughter. You deserve all the happiness in the world!",
+      message: "Happy birthday Aqsa! Wishing you a day filled with joy and laughter. You deserve all the happiness in my world!",
     });
     
     this.createMessage({
