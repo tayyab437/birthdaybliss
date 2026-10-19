@@ -1,19 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
 import WelcomePage from '@/components/WelcomePage';
 import BirthdayCard from '@/components/BirthdayCard';
-import PuzzleGame from '@/components/PuzzleGame';
+import ImageSlider from '@/components/ImageSlider';
 import SpecialQualities from '@/components/SpecialQualities';
-import GiftReveal from '@/components/GiftReveal';
 import MessageWall from '@/components/MessageWall';
+import ProposalButtonSection from '@/components/ProposalButtonSection';
 import BirthdayCountdown from '@/components/BirthdayCountdown';
-import BirthdayCake from '@/components/BirthdayCake';
 import AudioController from '@/components/AudioController';
-import WordScrambleGame from '@/components/WordScrambleGame';
-import ImageSliderPuzzle from '@/components/ImageSliderPuzzle';
-import DigitalEscapeRoom from '@/components/DigitalEscapeRoom';
-import InteractiveBirthdayPlaylist from '@/components/InteractiveBirthdayPlaylist';
-import VirtualBirthdayGifts from '@/components/VirtualBirthdayGifts';
-import BirthdayAvatarCreator from '@/components/BirthdayAvatarCreator';
 import NavigationButtons from '@/components/NavigationButtons';
 import PageLoader from '@/components/PageLoader';
 
@@ -21,18 +14,11 @@ import PageLoader from '@/components/PageLoader';
 const sections = [
   'welcome',
   'birthday-card',
-  'puzzle-game',
-  'word-scramble-game',
-  'image-slider-puzzle',
-  'digital-escape-room',
+  'image-slider',
   'special-qualities',
-  'gift-reveal',
-  'virtual-gifts',
   'message-wall',
-  'birthday-playlist',
-  'birthday-avatar-creator',
-  'birthday-countdown',
-  'birthday-cake'
+  'proposal-button-section',
+  'birthday-countdown'
 ];
 
 export default function BirthdaySite() {
@@ -92,18 +78,11 @@ export default function BirthdaySite() {
           audioPlaying={audioPlaying} 
           onToggleAudio={() => setAudioPlaying(!audioPlaying)} 
         />
-        <PuzzleGame onPuzzleComplete={() => navigateToSection('word-scramble-game')} />
-        <WordScrambleGame onGameComplete={() => navigateToSection('image-slider-puzzle')} />
-        <ImageSliderPuzzle onPuzzleComplete={() => navigateToSection('digital-escape-room')} />
-        <DigitalEscapeRoom onComplete={() => navigateToSection('special-qualities')} />
+        <ImageSlider />
         <SpecialQualities />
-        <GiftReveal />
-        <VirtualBirthdayGifts />
         <MessageWall />
-        <InteractiveBirthdayPlaylist />
-        <BirthdayAvatarCreator />
+        <ProposalButtonSection />
         <BirthdayCountdown />
-        <BirthdayCake />
       </div>
       
       <AudioController 

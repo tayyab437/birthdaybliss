@@ -45,7 +45,7 @@ export default function PageLoader({ delay = 1500 }: PageLoaderProps) {
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            Loading Zainab's Birthday Site
+            Loading Aqsa's Birthday Site
           </motion.h1>
           
           <div className="relative w-64 h-2 bg-white/30 rounded-full overflow-hidden mt-4">

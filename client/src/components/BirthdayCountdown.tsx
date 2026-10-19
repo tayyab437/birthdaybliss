@@ -17,23 +17,24 @@ export default function BirthdayCountdown() {
   });
   
   useEffect(() => {
-    // Set next birthday (one year from now)
-    const calculateNextBirthday = () => {
-      const today = new Date();
-      const nextBirthday = new Date(today);
-      nextBirthday.setFullYear(today.getFullYear() + 1);
-      return nextBirthday;
+    // Set target birthday date to October 21st
+    const getTargetDate = () => {
+      const now = new Date();
+      // Month 9 is October (0-indexed: Jan=0, Oct=9), day 21 at 00:00:00
+      let target = new Date(now.getFullYear(), 9, 21, 0, 0, 0);
+      if (now.getTime() > target.getTime()) {
+        target = new Date(now.getFullYear() + 1, 9, 21, 0, 0, 0);
+      }
+      return target;
     };
     
-    const nextBirthday = calculateNextBirthday();
-    
-    // Update countdown every second
-    const interval = setInterval(() => {
+    const updateCountdown = () => {
+      const target = getTargetDate();
       const now = new Date();
-      const difference = nextBirthday.getTime() - now.getTime();
+      const difference = target.getTime() - now.getTime();
       
       if (difference <= 0) {
-        clearInterval(interval);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
       
@@ -43,7 +44,11 @@ export default function BirthdayCountdown() {
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
       
       setTimeLeft({ days, hours, minutes, seconds });
-    }, 1000);
+    };
+
+    // Calculate immediately so no delay
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
     
     return () => clearInterval(interval);
   }, []);
@@ -62,8 +67,8 @@ export default function BirthdayCountdown() {
       id="birthday-countdown" 
       className="section bg-gradient-to-tr from-secondary/20 to-primary/20 flex flex-col items-center justify-center px-4 py-16"
     >
-      <h2 className="text-3xl md:text-4xl text-center mb-2 font-bold">Until Next Time</h2>
-      <p className="cursive text-xl text-accent text-center mb-12">Counting down to your next birthday</p>
+      <h2 className="text-3xl md:text-4xl text-center mb-2 font-bold">Time Until Next Birthday</h2>
+      <p className="cursive text-xl text-accent text-center mb-12">Counting down to Aqsa's Birthday on October 21st</p>
       
       <div className="countdown-container max-w-2xl w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -82,7 +87,7 @@ export default function BirthdayCountdown() {
             >
               {timeLeft.days}
             </motion.div>
-            <div className="text-sm uppercase tracking-wider mt-2">Days</div>
+            <div className="text-sm uppercase tracking-wider mt-2 font-medium text-gray-500">Days</div>
           </motion.div>
           
           {/* Hours */}
@@ -92,7 +97,7 @@ export default function BirthdayCountdown() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <motion.div 
-              className="text-4xl font-bold text-primary"
+              className="text-4xl font-bold text-rose-600"
               key={timeLeft.hours}
               variants={countVariants}
               initial={{ scale: 1.2, opacity: 0 }}
@@ -100,7 +105,7 @@ export default function BirthdayCountdown() {
             >
               {timeLeft.hours}
             </motion.div>
-            <div className="text-sm uppercase tracking-wider mt-2">Hours</div>
+            <div className="text-sm uppercase tracking-wider mt-2 font-medium text-gray-500">Hours</div>
           </motion.div>
           
           {/* Minutes */}
@@ -110,7 +115,7 @@ export default function BirthdayCountdown() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <motion.div 
-              className="text-4xl font-bold text-secondary"
+              className="text-4xl font-bold text-purple-600"
               key={timeLeft.minutes}
               variants={countVariants}
               initial={{ scale: 1.2, opacity: 0 }}
@@ -118,7 +123,7 @@ export default function BirthdayCountdown() {
             >
               {timeLeft.minutes}
             </motion.div>
-            <div className="text-sm uppercase tracking-wider mt-2">Minutes</div>
+            <div className="text-sm uppercase tracking-wider mt-2 font-medium text-gray-500">Minutes</div>
           </motion.div>
           
           {/* Seconds */}
@@ -136,12 +141,12 @@ export default function BirthdayCountdown() {
             >
               {timeLeft.seconds}
             </motion.div>
-            <div className="text-sm uppercase tracking-wider mt-2">Seconds</div>
+            <div className="text-sm uppercase tracking-wider mt-2 font-medium text-gray-500">Seconds</div>
           </motion.div>
         </div>
         
-        <div className="text-center mt-8 text-sm text-neutral-dark/70">
-          <p>But don't worry, we'll be celebrating all year long!</p>
+        <div className="text-center mt-8 text-sm text-neutral-dark/70 font-medium">
+          <p>Get ready for Aqsa's big celebration on October 21st! 🎂🎉</p>
         </div>
       </div>
     </section>

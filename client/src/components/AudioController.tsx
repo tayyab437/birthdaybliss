@@ -12,14 +12,14 @@ export default function AudioController({ isPlaying, setIsPlaying }: AudioContro
   
   useEffect(() => {
     // Create audio elements
-    bgMusicRef.current = new Audio('https://www.chosic.com/wp-content/uploads/2020/05/happy-birthday-song-instrumental.mp3');
+    bgMusicRef.current = new Audio('/audio/happy-birthday.mp3');
     bgMusicRef.current.loop = true;
     bgMusicRef.current.volume = 0.4;
     
-    clickSoundRef.current = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+    clickSoundRef.current = new Audio('/audio/click.mp3');
     clickSoundRef.current.volume = 0.3;
     
-    confettiSoundRef.current = new Audio('https://www.soundjay.com/misc/sounds/firework-explosion-1.mp3');
+    confettiSoundRef.current = new Audio('/audio/confetti.mp3');
     confettiSoundRef.current.volume = 0.5;
     
     // Clean up when component unmounts
@@ -46,6 +46,16 @@ export default function AudioController({ isPlaying, setIsPlaying }: AudioContro
       }
     }
   }, [isPlaying, setIsPlaying]);
+
+  useEffect(() => {
+    const handlePauseBg = () => {
+      setIsPlaying(false);
+    };
+    window.addEventListener('pause-bg-music', handlePauseBg);
+    return () => {
+      window.removeEventListener('pause-bg-music', handlePauseBg);
+    };
+  }, [setIsPlaying]);
   
   // Expose audio functions globally for other components to use
   useEffect(() => {

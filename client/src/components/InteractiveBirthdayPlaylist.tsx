@@ -19,36 +19,36 @@ export default function InteractiveBirthdayPlaylist() {
     {
       id: 1,
       title: "Happy Birthday",
-      artist: "Traditional",
-      url: "https://www.chosic.com/wp-content/uploads/2020/05/happy-birthday-song-instrumental.mp3",
+      artist: "Acoustic Birthday Melody",
+      url: "/audio/happy-birthday.mp3",
       coverImage: "https://images.unsplash.com/photo-1558006595-70351e874cc4?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     },
     {
       id: 2,
-      title: "Celebration",
-      artist: "Kool & The Gang",
-      url: "https://www.chosic.com/wp-content/uploads/2020/07/Celebration.mp3",
+      title: "Celebration Dance",
+      artist: "Upbeat Party Groove",
+      url: "/audio/celebration.mp3",
       coverImage: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     },
     {
       id: 3,
       title: "Good Time",
-      artist: "Owl City & Carly Rae Jepsen",
-      url: "https://www.chosic.com/wp-content/uploads/2020/08/good-time.mp3",
+      artist: "Warm Melodic Vibes",
+      url: "/audio/good-time.mp3",
       coverImage: "https://images.unsplash.com/photo-1496024840928-4c417adf211d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     },
     {
       id: 4,
       title: "Best Day of My Life",
-      artist: "American Authors",
-      url: "https://www.chosic.com/wp-content/uploads/2020/06/best-day-of-my-life.mp3",
+      artist: "Cheerful Celebration",
+      url: "/audio/best-day.mp3",
       coverImage: "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     },
     {
       id: 5,
-      title: "Birthday",
-      artist: "Katy Perry",
-      url: "https://www.chosic.com/wp-content/uploads/2020/09/birthday.mp3",
+      title: "Magical Wishes",
+      artist: "Sparkling Music Box",
+      url: "/audio/magical-wishes.mp3",
       coverImage: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     }
   ]);
@@ -62,31 +62,69 @@ export default function InteractiveBirthdayPlaylist() {
   const [isRepeating, setIsRepeating] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Initialize audio player
   useEffect(() => {
-    audioRef.current = new Audio();
-    audioRef.current.volume = volume / 100;
-    
-    // Load first song
-    loadSong(currentSongIndex);
-    
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.volume = volume / 100;
+    audioRef.current = audio;
+
+    const handleTimeUpdate = () => {
+      if (audio && !isNaN(audio.currentTime)) {
+        setProgress(audio.currentTime);
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      if (audio && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    };
+
+    const handleEnded = () => {
+      handleSongEnd();
+    };
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('durationchange', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+
+    // Initial load first song
+    audio.src = songs[0]?.url || "/audio/happy-birthday.mp3";
+    audio.load();
+
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('durationchange', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.pause();
+      audio.src = "";
+      audioRef.current = null;
     };
   }, []);
   
-  // Update audio when song changes
+  // Update audio source when song index changes
   useEffect(() => {
-    loadSong(currentSongIndex);
+    if (!audioRef.current || !songs[currentSongIndex]) return;
+    const audio = audioRef.current;
+    audio.src = songs[currentSongIndex].url;
+    audio.load();
+    if (isPlaying) {
+      window.dispatchEvent(new Event('pause-bg-music'));
+      audio.play().catch(error => {
+        console.error("Playback error:", error);
+      });
+    }
   }, [currentSongIndex]);
   
   // Update volume when changed
@@ -96,110 +134,63 @@ export default function InteractiveBirthdayPlaylist() {
     }
   }, [volume]);
   
-  // Load a song
-  const loadSong = (index: number) => {
+  // Start or pause playback
+  const togglePlayback = () => {
     if (!audioRef.current) return;
+    const audio = audioRef.current;
     
-    const song = songs[index];
-    
-    audioRef.current.src = song.url;
-    audioRef.current.load();
-    
-    // Set up event listeners
-    audioRef.current.onloadedmetadata = () => {
-      if (audioRef.current) {
-        setDuration(audioRef.current.duration);
-      }
-    };
-    
-    audioRef.current.onended = () => {
-      handleSongEnd();
-    };
-    
-    // Start playing if isPlaying is true
-    if (isPlaying) {
-      audioRef.current.play()
+    if (!audio.paused) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      window.dispatchEvent(new Event('pause-bg-music'));
+      audio.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
         .catch(error => {
           console.error("Audio playback was prevented:", error);
-          setIsPlaying(false);
           toast({
-            title: "Playback Error",
-            description: "Audio playback was blocked by the browser. Click play to try again.",
-            variant: "destructive"
+            title: "Tap to Play",
+            description: "Click again to start playing the playlist.",
           });
         });
     }
   };
-  
-  // Start or pause playback
-  const togglePlayback = () => {
-    if (!audioRef.current) return;
-    
-    if (isPlaying) {
-      audioRef.current.pause();
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-      }
+
+  const handleSelectSong = (index: number) => {
+    if (currentSongIndex === index) {
+      togglePlayback();
     } else {
-      audioRef.current.play()
-        .catch(error => {
-          console.error("Audio playback was prevented:", error);
-          toast({
-            title: "Playback Error",
-            description: "Audio playback was blocked by the browser. Please interact with the page first.",
-            variant: "destructive"
-          });
-          return;
-        });
-        
-      // Update progress
-      progressIntervalRef.current = setInterval(() => {
-        if (audioRef.current) {
-          setProgress(audioRef.current.currentTime);
-        }
-      }, 1000);
+      setCurrentSongIndex(index);
+      setIsPlaying(true);
     }
-    
-    setIsPlaying(!isPlaying);
   };
   
   // Play next song
   const playNextSong = () => {
     if (songs.length === 0) return;
-    
-    let nextIndex = currentSongIndex + 1;
-    
-    if (nextIndex >= songs.length) {
-      nextIndex = 0; // Loop back to first song
-    }
-    
+    const nextIndex = (currentSongIndex + 1) % songs.length;
     setCurrentSongIndex(nextIndex);
+    setIsPlaying(true);
   };
   
   // Play previous song
   const playPrevSong = () => {
     if (songs.length === 0) return;
-    
-    let prevIndex = currentSongIndex - 1;
-    
-    if (prevIndex < 0) {
-      prevIndex = songs.length - 1; // Loop to last song
-    }
-    
+    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
     setCurrentSongIndex(prevIndex);
+    setIsPlaying(true);
   };
   
   // Handle song end
   const handleSongEnd = () => {
     if (isRepeating) {
-      // Repeat current song
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
         audioRef.current.play().catch(() => {});
       }
     } else {
-      // Play next song
       playNextSong();
     }
   };
@@ -274,7 +265,7 @@ export default function InteractiveBirthdayPlaylist() {
       className="section bg-gradient-to-bl from-primary/20 to-secondary/20 flex flex-col items-center justify-center px-4 py-16"
     >
       <h2 className="text-3xl md:text-4xl text-center mb-2 font-bold">Birthday Playlist</h2>
-      <p className="cursive text-xl text-accent text-center mb-8">Enjoy music that celebrates Zainab!</p>
+      <p className="cursive text-xl text-accent text-center mb-8">Enjoy music that celebrates Aqsa!</p>
       
       <div className="max-w-3xl w-full">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -310,19 +301,20 @@ export default function InteractiveBirthdayPlaylist() {
                     <span>{formatTime(progress)}</span>
                     <span>{formatTime(duration)}</span>
                   </div>
-                  <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-accent rounded-full"
-                      style={{ width: `${(progress / duration) * 100}%` }}
-                      onClick={(e) => {
-                        const progressBar = e.currentTarget.parentElement;
-                        if (!progressBar) return;
-                        
-                        const rect = progressBar.getBoundingClientRect();
-                        const clickPosition = (e.clientX - rect.left) / rect.width;
+                  <div 
+                    className="relative h-3 bg-gray-200 rounded-full overflow-hidden cursor-pointer"
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickPosition = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                      if (duration > 0) {
                         skipToPosition(clickPosition * duration);
-                      }}
-                    ></div>
+                      }
+                    }}
+                  >
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-accent rounded-full transition-all duration-75"
+                      style={{ width: `${duration > 0 ? (progress / duration) * 100 : 0}%` }}
+                    />
                   </div>
                 </div>
                 
@@ -411,7 +403,7 @@ export default function InteractiveBirthdayPlaylist() {
                 {songs.map((song, index) => (
                   <motion.div
                     key={song.id}
-                    onClick={() => setCurrentSongIndex(index)}
+                    onClick={() => handleSelectSong(index)}
                     className={`flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors
                               ${currentSongIndex === index ? 'bg-accent/10' : ''}`}
                     whileHover={{ scale: 1.01 }}
@@ -446,7 +438,7 @@ export default function InteractiveBirthdayPlaylist() {
         </div>
         
         <p className="text-center text-sm text-neutral-dark/70 mt-4">
-          A special playlist curated for Zainab's birthday celebration!
+          A special playlist curated for Aqsa's birthday celebration!
         </p>
       </div>
     </section>

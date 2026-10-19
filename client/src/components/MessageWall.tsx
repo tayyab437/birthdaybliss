@@ -14,18 +14,26 @@ import { useToast } from '@/hooks/use-toast';
 
 // Form schema using zod
 const messageSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  message: z.string().min(5, { message: "Message must be at least 5 characters" }).max(200, { message: "Message must be less than 200 characters" })
+  name: z.string().min(1, { message: "Please enter your name" }),
+  message: z.string().min(2, { message: "Please write a birthday wish" }).max(300, { message: "Message must be less than 300 characters" })
 });
 
 type MessageFormValues = z.infer<typeof messageSchema>;
 
+interface MessageItem {
+  id: number;
+  name: string;
+  message: string;
+  timestamp: string;
+}
+
 export default function MessageWall() {
   const { toast } = useToast();
   
-  // Fetch messages
-  const { data: messages = [], isLoading } = useQuery<Array<{ id: number, name: string, message: string, timestamp: string }>>({
+  // Fetch messages with staleTime 0 so it refetches immediately
+  const { data: messages = [], isLoading, refetch } = useQuery<MessageItem[]>({
     queryKey: ['/api/messages'],
+    staleTime: 0,
   });
   
   // Add new message mutation
@@ -34,18 +42,40 @@ export default function MessageWall() {
       const response = await apiRequest('POST', '/api/messages', data);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/messages'] });
-      toast({
-        title: "Message posted!",
-        description: "Your birthday wish has been added to the wall.",
+    onSuccess: (newMessage: MessageItem) => {
+      // 1. Instantly update the query cache so the wish shows up below immediately
+      queryClient.setQueryData<MessageItem[]>(['/api/messages'], (old = []) => {
+        const list = Array.isArray(old) ? old : [];
+        if (list.some(m => m.id === newMessage.id)) return list;
+        return [newMessage, ...list];
       });
-      form.reset();
+      
+      // 2. Invalidate query and trigger active refetch
+      queryClient.invalidateQueries({
+        queryKey: ['/api/messages'],
+        refetchType: 'all',
+      });
+      refetch();
+
+      // 3. Play confetti celebration sound
+      const sfx = new Audio('/confetti.mp3');
+      sfx.volume = 0.4;
+      sfx.play().catch(() => {});
+
+      // 4. Reset form fields
+      form.reset({ name: '', message: '' });
+
+      // 5. Toast confirmation
+      toast({
+        title: "Wish posted! 🎉",
+        description: "Your birthday wish has been added to Aqsa's message wall.",
+      });
     },
     onError: (error) => {
+      console.error("Error posting message:", error);
       toast({
-        title: "Failed to post message",
-        description: String(error),
+        title: "Failed to post wish",
+        description: "Please check your message and try again.",
         variant: "destructive"
       });
     }
@@ -65,15 +95,33 @@ export default function MessageWall() {
     addMessage(data);
   };
 
-  // Get a random rotation between -3 and 3 degrees
-  const getRandomRotation = () => {
-    return Math.floor(Math.random() * 7) - 3;
+  // Deterministic rotation based on id
+  const getRotation = (id: number) => {
+    const rotations = [-1.5, 1.2, -0.8, 1.8, -2, 1];
+    return rotations[Math.abs(id) % rotations.length];
   };
 
-  // Get a random color for the message
-  const getRandomColor = () => {
-    const colors = ['text-accent', 'text-primary', 'text-secondary'];
-    return colors[Math.floor(Math.random() * colors.length)];
+  // Deterministic vibrant color based on id
+  const getColorClass = (id: number) => {
+    const colors = [
+      'text-rose-600',
+      'text-pink-600',
+      'text-purple-600',
+      'text-indigo-600',
+      'text-amber-600',
+      'text-emerald-600',
+    ];
+    return colors[Math.abs(id) % colors.length];
+  };
+
+  const formatWishDate = (ts?: string) => {
+    if (!ts) return "";
+    try {
+      const d = new Date(ts);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    } catch {
+      return "";
+    }
   };
 
   return (
@@ -115,7 +163,7 @@ export default function MessageWall() {
                   <FormLabel>Your Message</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Write your birthday wish here..." 
+                      placeholder="Write your birthday wish for Aqsa here..." 
                       {...field} 
                       rows={3}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
@@ -129,9 +177,9 @@ export default function MessageWall() {
             <Button 
               type="submit" 
               disabled={isPending}
-              className="w-full px-4 py-2 bg-accent text-white rounded-lg hover:bg-opacity-90 transition-all"
+              className="w-full px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all font-semibold"
             >
-              {isPending ? 'Posting...' : 'Post Wish'}
+              {isPending ? 'Posting Wish...' : 'Post Wish 💌'}
             </Button>
           </form>
         </Form>
@@ -142,29 +190,39 @@ export default function MessageWall() {
         {isLoading ? (
           // Loading skeleton
           Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white/50 rounded-lg shadow-md p-4 h-24 animate-pulse" />
+            <div key={i} className="bg-white/50 rounded-lg shadow-md p-4 h-28 animate-pulse" />
           ))
         ) : messages.length > 0 ? (
           // Messages
-          messages.map((message, index) => (
+          messages.map((item) => (
             <motion.div
-              key={message.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="bg-white rounded-lg shadow-md p-4"
-              style={{ transform: `rotate(${getRandomRotation()}deg)` }}
+              key={item.id}
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-xl shadow-md p-5 border border-pink-100/70 hover:shadow-lg transition-all flex flex-col justify-between"
+              style={{ transform: `rotate(${getRotation(item.id)}deg)` }}
             >
-              <p className="text-sm mb-2 leading-relaxed">{message.message}</p>
-              <p className={`text-right text-sm font-bold ${getRandomColor()}`}>
-                - {message.name}
-              </p>
+              <div className="flex items-start gap-2 mb-3">
+                <span className="text-xl">💌</span>
+                <p className="text-sm md:text-base text-gray-800 leading-relaxed font-normal">
+                  {item.message}
+                </p>
+              </div>
+              <div className="flex items-center justify-between border-t border-gray-100 pt-2 mt-2">
+                <span className="text-xs text-gray-400">
+                  {formatWishDate(item.timestamp)}
+                </span>
+                <span className={`text-sm font-bold ${getColorClass(item.id)}`}>
+                  — {item.name}
+                </span>
+              </div>
             </motion.div>
           ))
         ) : (
           // Empty state
           <div className="col-span-full text-center py-8">
-            <p className="text-neutral-dark/70">Be the first to leave a birthday wish!</p>
+            <p className="text-neutral-dark/70">Be the first to leave a birthday wish for Aqsa!</p>
           </div>
         )}
       </div>

@@ -153,7 +153,7 @@ export default function BirthdayAvatarCreator() {
       className="section bg-gradient-to-bl from-primary/20 to-secondary/20 flex flex-col items-center justify-center px-4 py-16"
     >
       <h2 className="text-3xl md:text-4xl text-center mb-2 font-bold">Birthday Avatar Creator</h2>
-      <p className="cursive text-xl text-accent text-center mb-8">Create a special birthday avatar for Zainab!</p>
+      <p className="cursive text-xl text-accent text-center mb-8">Create a special birthday avatar for Aqsa!</p>
       
       <div className="max-w-3xl w-full flex flex-col md:flex-row gap-8">
         {/* Avatar Preview */}
@@ -184,7 +184,7 @@ export default function BirthdayAvatarCreator() {
               
               {/* Birthday message */}
               <div className="absolute bottom-4 text-center">
-                <p className="font-bold">Happy Birthday Zainab!</p>
+                <p className="font-bold">Happy Birthday Aqsa!</p>
               </div>
             </div>
             
@@ -299,7 +299,7 @@ export default function BirthdayAvatarCreator() {
           
           <div className="mt-8 pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Create a fun birthday avatar for Zainab by mixing and matching different features.
+              Create a fun birthday avatar for Aqsa by mixing and matching different features.
               Once you're happy with your creation, click "Share Avatar" to send it as a virtual birthday card!
             </p>
           </div>

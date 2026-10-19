@@ -28,8 +28,8 @@ export class MemStorage implements IStorage {
     
     // Add some sample messages
     this.createMessage({
-      name: "Sarah",
-      message: "Happy birthday Zainab! Wishing you a day filled with joy and laughter. You deserve all the happiness in the world!",
+      name: "Kivan",
+      message: "Happy birthday Aqsa! Wishing you a day filled with joy and laughter. You deserve all the happiness in the world!",
     });
     
     this.createMessage({
@@ -72,7 +72,7 @@ export class MemStorage implements IStorage {
   
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     const id = this.messageCurrentId++;
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date();
     const message: Message = { ...insertMessage, id, timestamp };
     this.messagesMap.set(id, message);
     return message;

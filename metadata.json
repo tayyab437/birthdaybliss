@@ -1,0 +1,8 @@
+{
+  "name": "Happy Birthday Aqsa",
+  "description": "An interactive, beautifully designed birthday celebration website for Aqsa featuring games, 3D cake, photo puzzles, secret gifts, and a message board.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

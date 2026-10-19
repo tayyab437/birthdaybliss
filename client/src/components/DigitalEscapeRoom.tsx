@@ -47,14 +47,14 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
     {
       id: 'memory-room',
       name: 'Memory Room',
-      description: 'Welcome to Zainab\'s birthday memory lane. To unlock the next room, you need to solve puzzles related to her life.',
+      description: 'Welcome to Aqsa\'s birthday memory lane. To unlock the next room, you need to solve puzzles related to her life.',
       unlocked: true,
       completed: false,
       puzzles: [
         {
           id: 'birthday-code',
           title: 'Birthday Code',
-          description: 'Enter Zainab\'s special birthday number code.',
+          description: 'Enter Aqsa\'s special birthday number code.',
           type: 'code',
           answer: '3', // Birthday code is 3
           hint: 'It\'s a small single-digit number, one of the first odd numbers.',
@@ -63,7 +63,7 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
         {
           id: 'favorite-color',
           title: 'Favorite Color',
-          description: 'What\'s Zainab\'s favorite color? (lowercase)',
+          description: 'What\'s Aqsa\'s favorite color? (lowercase)',
           type: 'riddle',
           answer: 'black', // Favorite color is black
           hint: 'It\'s the absence of all colors, elegant and timeless.',
@@ -74,14 +74,14 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
     {
       id: 'friendship-room',
       name: 'Friendship Room',
-      description: 'Final room! These puzzles celebrate your connection with Zainab and your memories together.',
+      description: 'Final room! These puzzles celebrate your connection with Aqsa and your memories together.',
       unlocked: false,
       completed: false,
       puzzles: [
         {
           id: 'friend-riddle',
           title: 'When Did You Meet?',
-          description: 'In what year did you first meet Zainab? (Enter the full year)',
+          description: 'In what year did you first meet Aqsa? (Enter the full year)',
           type: 'code',
           answer: '2022', // The year you met in Lahore
           hint: 'You met quite recently, in the 2020s.',
@@ -90,7 +90,7 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
         {
           id: 'shared-memory',
           title: 'Where Did You Meet?',
-          description: 'In which city did you and Zainab first meet? (lowercase)',
+          description: 'In which city did you and Aqsa first meet? (lowercase)',
           type: 'riddle',
           answer: 'lahore', // The city where you met
           hint: 'It\'s a major cultural city in Pakistan.',
@@ -291,7 +291,7 @@ export default function DigitalEscapeRoom({ onComplete }: DigitalEscapeRoomProps
           <div className="text-center">
             <h3 className="text-xl font-bold mb-4">Welcome to the Birthday Escape Room!</h3>
             <p className="mb-6">
-              You're invited to a special challenge to celebrate Zainab's birthday. Solve puzzles, unlock rooms, and discover birthday surprises along the way!
+              You're invited to a special challenge to celebrate Aqsa's birthday. Solve puzzles, unlock rooms, and discover birthday surprises along the way!
             </p>
             <Button 
               onClick={startGame}

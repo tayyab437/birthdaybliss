@@ -30,7 +30,7 @@ export default function BirthdayCard({ audioPlaying, onToggleAudio }: BirthdayCa
             <div className="flip-card-front absolute w-full h-full rounded-xl flex items-center justify-center p-5 shadow-lg bg-white border-4 border-accent">
               <div className="text-center">
                 <div className="text-6xl mb-3">🎁</div>
-                <h3 className="cursive text-3xl text-accent mb-2">For Zainab</h3>
+                <h3 className="cursive text-3xl text-accent mb-2">For Aqsa</h3>
                 <p className="text-sm text-neutral-dark/70">Click to open</p>
               </div>
             </div>
@@ -39,7 +39,7 @@ export default function BirthdayCard({ audioPlaying, onToggleAudio }: BirthdayCa
             <div className="flip-card-back absolute w-full h-full rounded-xl p-8 shadow-lg bg-white border-4 border-accent overflow-y-auto">
               <div className="text-center h-full flex flex-col justify-between">
                 <div>
-                  <h3 className="cursive text-2xl md:text-3xl text-accent mb-4">Dear Zainab,</h3>
+                  <h3 className="cursive text-2xl md:text-3xl text-accent mb-4">Dear Aqsa,</h3>
                   <p className="text-sm md:text-base mb-4 leading-relaxed">
                     On your special day, I want to celebrate all the joy and light you bring to the world. Your friendship means more than words can express.
                   </p>

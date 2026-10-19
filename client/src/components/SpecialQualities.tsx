@@ -5,8 +5,8 @@ import useIntersectionObserver from '@/lib/useIntersectionObserver';
 // Define special qualities data
 const qualities = [
   {
-    title: "Your Kindness",
-    description: "Your compassion and thoughtfulness toward others is truly inspiring. You always find ways to make people feel valued and appreciated.",
+    title: "Yourself",
+    description: "I haven't seen someone more amazing than you. Just being genuinely and wonderfully yourself brings so much warmth, joy, and light to everyone who knows you.",
     color: "border-accent"
   },
   {
@@ -20,8 +20,8 @@ const qualities = [
     color: "border-primary"
   },
   {
-    title: "Your Laughter",
-    description: "Your joyful spirit and incredible sense of humor bring light to even the darkest days. Your laugh is truly contagious!",
+    title: "Your Smile & Voice",
+    description: "I miss your smile so much, your sweet way of talking, your laughter, and honestly every single thing about you. Being around you brings a kind of happiness that nothing else in the world can match.",
     color: "border-accent"
   },
   {

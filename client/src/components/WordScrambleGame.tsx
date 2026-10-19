@@ -21,7 +21,7 @@ const birthdayWords = [
   { word: "FRIENDSHIP", hint: "A close relationship between people" },
   { word: "LAUGHTER", hint: "The sound of joy and amusement" },
   { word: "CONFETTI", hint: "Small pieces of colored paper thrown as celebration" },
-  { word: "ZAINAB", hint: "The birthday star's name!" },
+  { word: "AQSA", hint: "The birthday star's name!" },
 ];
 
 export default function WordScrambleGame({ onGameComplete }: WordScrambleGameProps) {
