@@ -56,7 +56,8 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  // In development, dev server must run on port 3000 as required by the runtime environment
+  const port = process.env.NODE_ENV === "production" && process.env.PORT ? parseInt(process.env.PORT) : 3000;
   server.listen({
     port,
     host: "0.0.0.0",

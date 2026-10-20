@@ -30,17 +30,79 @@ interface MessageItem {
 export default function MessageWall() {
   const { toast } = useToast();
   
-  // Fetch messages with staleTime 0 so it refetches immediately
-  const { data: messages = [], isLoading, refetch } = useQuery<MessageItem[]>({
+  // Default seed messages
+  const defaultMessages: MessageItem[] = [
+    {
+      id: 1,
+      name: "Kivan",
+      message: "Happy birthday Aqsa! Wishing you a day filled with joy and laughter. You deserve all the happiness in my world!",
+      timestamp: new Date().toISOString()
+    },
+    {
+      id: 2,
+      name: "Ahmed",
+      message: "May your day be as special as you are. Many happy returns!",
+      timestamp: new Date().toISOString()
+    },
+    {
+      id: 3,
+      name: "Fatima",
+      message: "To many more years of friendship and celebrations. Happy birthday!",
+      timestamp: new Date().toISOString()
+    }
+  ];
+
+  // Fetch messages with automatic fallback for static hosts like Netlify
+  const { data: messages = defaultMessages, isLoading, refetch } = useQuery<MessageItem[]>({
     queryKey: ['/api/messages'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/messages');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            localStorage.setItem('aqsa_birthday_wishes', JSON.stringify(data));
+            return data;
+          }
+        }
+      } catch (e) {
+        // Fallback for static environments
+      }
+      try {
+        const saved = localStorage.getItem('aqsa_birthday_wishes');
+        if (saved) return JSON.parse(saved);
+      } catch {}
+      return defaultMessages;
+    },
     staleTime: 0,
   });
   
-  // Add new message mutation
+  // Add new message mutation with offline/static support
   const { mutate: addMessage, isPending } = useMutation({
     mutationFn: async (data: MessageFormValues) => {
-      const response = await apiRequest('POST', '/api/messages', data);
-      return response.json();
+      const fallbackItem: MessageItem = {
+        id: Date.now(),
+        name: data.name,
+        message: data.message,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const response = await apiRequest('POST', '/api/messages', data);
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (err) {
+        console.warn("Backend unavailable, storing message in local storage");
+      }
+
+      // Store in localStorage for static deployment
+      try {
+        const currentSaved: MessageItem[] = JSON.parse(localStorage.getItem('aqsa_birthday_wishes') || '[]');
+        const updated = [fallbackItem, ...(currentSaved.length ? currentSaved : defaultMessages)];
+        localStorage.setItem('aqsa_birthday_wishes', JSON.stringify(updated));
+      } catch {}
+      return fallbackItem;
     },
     onSuccess: (newMessage: MessageItem) => {
       // 1. Instantly update the query cache so the wish shows up below immediately
